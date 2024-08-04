@@ -1,6 +1,9 @@
 mod a_star;
+mod models;
+mod generators;
 
-use a_star::{a_star, Node};
+use a_star::a_star;
+use models::node::Node;
 use rand::Rng;
 
 fn mock_heuristic(_current_node: &Node, _desired_node: &Node) -> i32 {
