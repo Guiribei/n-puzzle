@@ -20,6 +20,7 @@ pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32) {
             }
         };
         if current_node == desired_node {
+			println!("Current node:\n{}", current_node);
             println!("Solution found!");
             return;
         }
@@ -36,13 +37,15 @@ pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32) {
         let mut possible_nodes: Vec<Node> = generate_possible_nodes(&current_node);
 
         for possible_node in possible_nodes.iter_mut() {
+			possible_node.depth = current_node.depth + 1; // g(x)
+			possible_node.heuristic_value = heurisitc_function(possible_node, &desired_node); // h(x)
+			
             if *possible_node == desired_node {
+				println!("Current node:\n{}", *possible_node);
                 println!("Solution found!");
                 return;
             }
 
-            possible_node.depth = current_node.depth + 1; // g(x)
-            possible_node.heuristic_value = heurisitc_function(possible_node, &desired_node); // h(x)
 
             // Skip node if it is in the close set
             if close_nodes.contains(&possible_node) {
