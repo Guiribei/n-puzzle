@@ -44,11 +44,21 @@ impl cmp::Eq for Node {}
 
 impl Ord for Node {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        // We reverse the order here because BinaryHeap is a max-heap by default,
-        // but we need a min-heap for A*.
         let self_f = self.depth + self.heuristic_value;
         let other_f = other.depth + other.heuristic_value;
-        other_f.cmp(&self_f)
+
+        // Compare f(x)
+        if self_f == other_f {
+            // Tie-breaking by h(x)
+            if self.heuristic_value == other.heuristic_value {
+                // Further tie-breaking by depth (g(x))
+                self.depth.cmp(&other.depth)
+            } else {
+                other.heuristic_value.cmp(&self.heuristic_value)
+            }
+        } else {
+            other_f.cmp(&self_f)
+        }
     }
 }
 
@@ -68,6 +78,7 @@ impl fmt::Display for Node {
         }
 		println!("Depth: {}", self.depth);
         println!("Heuristic value: {}", self.heuristic_value);
+        println!("f(x): {}", self.depth + self.heuristic_value);
         Ok(())
     }
 }
