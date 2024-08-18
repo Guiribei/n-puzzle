@@ -4,7 +4,7 @@ mod generators;
 mod heuristics;
 
 use a_star::a_star;
-use heuristics::conflict_heuristic::conflict_heuristic;
+use heuristics::{conflict_heuristic::conflict_heuristic, gaschnig_heuristic::gaschnig_heuristic, manhattan_distance::manhattan_distance};
 
 fn main() -> std::io::Result<()> {
     // let file = File::open("puzzles/puzzle3x3.solvable")?;
