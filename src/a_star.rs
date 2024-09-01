@@ -2,11 +2,12 @@ use crate::generators::generate_desired_node::generate_desired_node;
 use crate::generators::generate_possible_nodes::generate_possible_nodes;
 use crate::models::node::Node;
 
-pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32) {
-    let mut open_nodes: Vec<Node> = vec![Node::new_mocked()];
+pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32, original_node: &Node) {
+    let mut open_nodes: Vec<Node> = vec![original_node.clone()];
     let mut close_nodes: Vec<Node> = Vec::new();
 
-    let desired_node = generate_desired_node(3);
+    let desired_node = generate_desired_node(original_node.puzzle_configuration.len());
+    println!("Desired node:\n{}", desired_node);
 
     while !open_nodes.is_empty() {
         let current_node = open_nodes
@@ -66,6 +67,9 @@ pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32) {
                 // If it's not in the open set, add it
                 open_nodes.push(possible_node.clone());
             }
+        }
+        if current_node.depth % 10 == 0 {
+            println!("Current depth:\n{}", current_node.depth);
         }
     }
 }

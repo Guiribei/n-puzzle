@@ -1,5 +1,5 @@
 use core::fmt;
-use std::cmp;
+use std::{cmp, vec};
 
 #[derive(Clone)]
 pub struct Node {
@@ -12,7 +12,7 @@ pub struct Node {
 impl Node {
     pub fn new_mocked() -> Node {
         Node {
-            puzzle_configuration: vec![vec![7, 1, 6], vec![3, 0, 5], vec![4, 8, 2]],
+            puzzle_configuration: vec![vec![14, 0, 1, 6], vec![3, 12, 11, 4], vec![2, 13, 8, 15], vec![5, 7, 9, 10]],
             heuristic_value: 0,
             depth: 0,
             _parent: None,
