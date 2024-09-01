@@ -10,15 +10,34 @@ use std::{
 };
 
 use a_star::a_star;
-use heuristics::{conflict_heuristic::conflict_heuristic, manhattan_distance::manhattan_distance};
+use heuristics::{
+    conflict_heuristic::conflict_heuristic, gaschnig_heuristic::gaschnig_heuristic,
+    manhattan_distance::manhattan_distance,
+};
 use models::node::Node;
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        eprintln!("Usage: {} <file_path>", args[0]);
+    if args.len() < 2 || args.len() > 3 {
+        eprintln!(
+            "Usage: {} <file_path> [manhattan/conflict/gaschnig]",
+            args[0]
+        );
         return Ok(());
     }
+    let heuristic_function = match args.get(2) {
+        Some(heuristic) => match heuristic.as_str() {
+            "manhattan" => manhattan_distance,
+            "conflict" => conflict_heuristic,
+            "gaschnig" => gaschnig_heuristic,
+            _ => {
+                eprintln!("Invalid heuristic function");
+                return Ok(());
+            }
+        },
+        None => manhattan_distance,
+    };
+
     let file_path = &args[1];
 
     let file = File::open(file_path)?;
@@ -37,10 +56,8 @@ fn main() -> Result<()> {
     if let Some(first_number) = data.first().and_then(|line| line.parse::<i32>().ok()) {
         for line in &data[1..] {
             if (line.split_whitespace().count() as i32) != first_number {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidData,
-                    "Invalid puzzle configuration",
-                ));
+                eprintln!("Invalid puzzle configuration");
+                return Ok(());
             }
         }
         data[1..]
@@ -56,20 +73,16 @@ fn main() -> Result<()> {
             .for_each(|line| puzzle_configuration.push(line));
         for number in puzzle_configuration.iter().flatten() {
             if number < &0 {
-                return Err(io::Error::new(
-                    io::ErrorKind::InvalidData,
-                    "Invalid puzzle configuration",
-                ));
+                eprintln!("Invalid puzzle configuration");
+                return Ok(());
             }
         }
     } else {
-        return Err(io::Error::new(
-            io::ErrorKind::InvalidData,
-            "Invalid puzzle configuration",
-        ));
+        eprintln!("Invalid puzzle configuration");
+        return Ok(());
     };
 
     let node = Node::new(puzzle_configuration);
-    let _a_star = a_star(conflict_heuristic, &node);
+    a_star(heuristic_function, &node);
     Ok(())
 }
