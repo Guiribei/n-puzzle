@@ -4,11 +4,12 @@ use crate::generators::generate_desired_node::generate_desired_node;
 use crate::generators::generate_possible_nodes::generate_possible_nodes;
 use crate::models::node::Node;
 
-pub fn a_star(heurisitc_function: fn(&Node, &Node) -> i32, original_node: &Node) {
-    let mut open_nodes: Vec<Node> = vec![original_node.clone()];
-    let mut close_nodes: Vec<Node> = Vec::new();
+pub fn a_star(heuristic_function: fn(&Node, &Node) -> i32, start_node: &Node) {
+    let mut open_nodes = BinaryHeap::new();
+    let mut node_map: HashMap<Node, i32> = HashMap::new(); // Map of Node to f(x)
+    let mut close_nodes: HashSet<Node> = HashSet::new();
 
-    let desired_node = generate_desired_node(original_node.puzzle_configuration.len());
+    let desired_node = generate_desired_node(start_node.puzzle_configuration.len());
     println!("Desired node:\n{}", desired_node);
 
     open_nodes.push(start_node.clone());
