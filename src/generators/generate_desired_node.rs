@@ -45,6 +45,19 @@ pub fn generate_desired_node(n: usize) -> Node {
         }
     }
 
-	matrix[(n - 1) / 2][(n - 1) / 2] = 0;
-    Node::new(matrix)
+    // Find the highest value and turn it to 0
+    for row in matrix.iter_mut() {
+        for value in row.iter_mut() {
+            if *value == n * n {
+                *value = 0;
+            }
+        }
+    }
+
+    Node::new(
+        matrix
+            .iter()
+            .map(|inner_vec| inner_vec.iter().map(|&x| x as i32).collect())
+            .collect()
+    )
 }

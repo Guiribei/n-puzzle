@@ -10,7 +10,7 @@ use std::{
 };
 
 use a_star::a_star;
-use heuristics::manhattan_distance::manhattan_distance;
+use heuristics::{conflict_heuristic::conflict_heuristic, manhattan_distance::manhattan_distance};
 use models::node::Node;
 
 fn main() -> Result<()> {
@@ -70,6 +70,6 @@ fn main() -> Result<()> {
     };
 
     let node = Node::new(puzzle_configuration);
-    let _a_star = a_star(manhattan_distance, &node);
+    let _a_star = a_star(conflict_heuristic, &node);
     Ok(())
 }
