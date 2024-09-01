@@ -4,13 +4,20 @@ use crate::generators::generate_desired_node::generate_desired_node;
 use crate::generators::generate_possible_nodes::generate_possible_nodes;
 use crate::models::node::Node;
 
+fn print_node_recursive(node: &Node) {
+    if let Some(parent) = &node.parent {
+        print_node_recursive(parent);
+    }
+    println!("{}", node);
+}
+
 pub fn a_star(heuristic_function: fn(&Node, &Node) -> i32, start_node: &Node) {
     let mut open_nodes = BinaryHeap::new();
     let mut node_map: HashMap<Node, i32> = HashMap::new(); // Map of Node to f(x)
     let mut close_nodes: HashSet<Node> = HashSet::new();
 
     let desired_node = generate_desired_node(start_node.puzzle_configuration.len());
-    println!("Desired node:\n{}", desired_node);
+    // println!("Desired node:\n{}", desired_node);
 
     open_nodes.push(start_node.clone());
     node_map.insert(start_node.clone(), start_node.depth + start_node.heuristic_value);
@@ -20,10 +27,17 @@ pub fn a_star(heuristic_function: fn(&Node, &Node) -> i32, start_node: &Node) {
             panic!("at the disco")
         }
         current_node.was_seen = true;
-        println!("Current node:\n{}", current_node);
+        // println!("Current node:\n{}", current_node);
         
         if current_node == desired_node {
             println!("Solution found!");
+            // let mut current_node = current_node.clone();
+            // while let Some(parent) = &current_node.parent {
+            //     println!("{}", current_node);
+            //     current_node = *parent.clone();
+            // }
+            // Now print recursively the path from the start node to the current node
+            print_node_recursive(&current_node);
             return;
         }
 
@@ -46,6 +60,13 @@ pub fn a_star(heuristic_function: fn(&Node, &Node) -> i32, start_node: &Node) {
 
             if *possible_node == desired_node {
                 println!("Solution found!");
+                // Print the solution
+                // let mut current_node = possible_node.clone();
+                // while let Some(parent) = &current_node.parent {
+                //     println!("{}", current_node);
+                //     current_node = *parent.clone();
+                // }
+                print_node_recursive(possible_node);
                 return;
             }
 
@@ -63,9 +84,6 @@ pub fn a_star(heuristic_function: fn(&Node, &Node) -> i32, start_node: &Node) {
                 open_nodes.push(possible_node.clone());
                 node_map.insert(possible_node.clone(), f_value);
             }
-        }
-        if current_node.depth % 10 == 0 {
-            println!("Current depth:\n{}", current_node.depth);
         }
     }
 }

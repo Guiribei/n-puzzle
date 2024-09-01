@@ -8,7 +8,7 @@ pub struct Node {
     pub heuristic_value: i32,
     pub depth: i32,
     pub was_seen: bool,
-    pub _parent: Option<Box<Node>>,
+    pub parent: Option<Box<Node>>,
 }
 
 impl Node {
@@ -18,7 +18,7 @@ impl Node {
             heuristic_value: 0,
             depth: 0,
             was_seen: false,
-            _parent: None,
+            parent: None,
         }
     }
 
@@ -28,7 +28,17 @@ impl Node {
             heuristic_value: 0,
             depth: 0,
             was_seen: false,
-            _parent: None,
+            parent: None,
+        }
+    }
+
+    pub fn new_with_parent(puzzle_configuration: Vec<Vec<i32>>, parent: Node) -> Node {
+        Node {
+            puzzle_configuration,
+            heuristic_value: 0,
+            depth: 0,
+            was_seen: false,
+            parent: Some(Box::new(parent)),
         }
     }
 }
